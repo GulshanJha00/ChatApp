@@ -9,7 +9,7 @@ const Page = () => {
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
-    socket.current = io("http://localhost:3001");
+    socket.current = io("https://chatapp-1-ywkf.onrender.com/");
 
     socket.current.on("connect", () => {
       socket.current?.emit("Yo", "YO");
