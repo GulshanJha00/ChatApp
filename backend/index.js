@@ -5,7 +5,7 @@ const cors = require("cors")
 
 app.use(
     cors({
-      origin: "https://poo-nex.vercel.app", // Allow only your frontend
+      origin: "https://ponex.vercel.app", // Allow only your frontend
       methods: ["GET", "POST"],
       credentials: true, // Allow cookies if needed
     })
@@ -14,7 +14,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
-        origin:"https://poo-nex.vercel.app/"
+        origin:"https://ponex.vercel.app/",
+        methods: ["GET", "POST"],
     }
 });
 
