@@ -3,6 +3,8 @@ const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const cors = require("cors")
 
+const app = express();
+
 app.use(
     cors({
       origin: "https://ponex.vercel.app", // Allow only your frontend
@@ -10,7 +12,6 @@ app.use(
       credentials: true, // Allow cookies if needed
     })
   );
-const app = express();
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
