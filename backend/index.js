@@ -15,7 +15,7 @@ app.use(
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
-        origin:"https://ponex.vercel.app/",
+        origin:"https://ponex.vercel.app",
         methods: ["GET", "POST"],
     }
 });

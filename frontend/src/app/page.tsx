@@ -9,7 +9,9 @@ const Page = () => {
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
-    socket.current = io("https://chatapp-1-ywkf.onrender.com/");
+    socket.current = io("https://chatapp-1-ywkf.onrender.com", {
+      transports: ["websocket", "polling"]
+    });
 
     socket.current.on("connect", () => {
       socket.current?.emit("Yo", "YO");
