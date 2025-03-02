@@ -1,76 +1,71 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
-import { io,Socket } from "socket.io-client";
-
-const Page = () => {
-  const [chat, setChat] = useState("")
-  const [dark, setDark] = useState(true);
-  const [receiving, setReceiving] = useState("")
-  const socket = useRef<Socket | null>(null);
-
-  useEffect(() => {
-    socket.current = io("https://chatapp-1-ywkf.onrender.com", {
-      transports: ["websocket", "polling"]
-    });
-
-    socket.current.on("connect", () => {
-      socket.current?.emit("Yo", "YO");
-      
-    });
-    socket.current.on("receiving",(data)=>{
-      setReceiving(data);
-    })
-
-    return () => {
-      socket.current?.disconnect();
-    };
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    socket.current?.emit("sending",`${chat}`)
-    console.log(chat)
-  };
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import "./app.css"
+import Footer from "@/components/Footer";
+import Features from "@/components/Features";
+const page = () => {
   return (
-    <div
-      className={`h-screen w-screen flex  flex-col items-center ${
-        dark ? "bg-black" : "bg-white"
-      }`}
-    >
-      <div
-        className={`absolute top-10 right-10 cursor-pointer`}
-        onClick={() => setDark(!dark)}
-      >
-        <h1 className="bg-blue-800 px-2 py-1 text-2xl rounded-lg">
-          {dark ? "🌝 Light" : "🌚 Dark"}
+    <div className=" w-full h-screen">
+      <video
+        src="/video.mp4"
+        className="w-full h-full blur-xs absolute z-[-2]"
+        autoPlay
+        muted
+        loop
+      ></video>
+      <div className="absolute inset-0 h-full w-full bg-black  opacity-60 z-[-1]"></div>
+      <div className="flex flex-col justify-center items-center w-full h-screen bg-transparent">
+        <Image
+          src={"/icon.png"}
+          height={100}
+          width={100}
+          className="mb-10"
+          alt="icon"
+        ></Image>
+        <h1
+          style={{
+            fontFamily: "Anton SC",
+            fontWeight: 900,
+            fontStyle: 'italic',
+          }}
+          className="ponexText text-6xl"
+        >
+          PONEX
         </h1>
-      </div>
 
-      <form
-        className={`border-2 p-10 flex flex-col gap-10 ${
-          dark ? "border-white text-white" : "border-black text-black"
-        }`}
-        onSubmit={handleSubmit}
-      >
-        <h1 className="text-blue-800 font-bold text-2xl text-center">
-          Enter Your Message
-        </h1>
-        <input
-          type="text"
-          placeholder="Enter text"
-          value={chat}
-          onChange={(e)=>setChat(e.target.value)}
-          className={`border-2 p-2 rounded-lg bg-white text-black`}
-        />
-        <button className="bg-red-600 text-white px-4 py-2 rounded">
-          Submit
-        </button>
-      </form>
-      <div>
-        <h1 className="bg-blue-700 px-2 py-1 mt-5 rounded-lg text-2xl text-white">{receiving}</h1>
+        <h1 className="mb-4 text-lg">Connect. Chat. Repeat.</h1>
+
+        <div className="flex gap-5 justify-center items-center">
+          <Link
+            className="p-4 text-lg rounded-lg bg-yellow-300 text-black italic font-bold"
+            style={{ fontFamily: "Allan" }}
+            href={"/chat"}
+          >
+            Text Chat{" "}
+          </Link>
+          <h1
+            style={{
+              fontFamily: "Allan",
+              fontWeight: 800,
+              fontStyle: "italic",
+            }}
+          >
+            OR
+          </h1>
+          <Link
+            className="p-4 text-lg rounded-lg bg-yellow-300 text-black italic font-bold"
+            style={{ fontFamily: "Allan" }}
+            href={"/video"}
+          >
+            Video Chat{" "}
+          </Link>
+        </div>
       </div>
+      <Features/>
+      <Footer/>
     </div>
   );
 };
 
-export default Page;
+export default page;

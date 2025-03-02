@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Allan:wght@400;700&family=Itim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton+SC&display=swap');
+
+
 @import "tailwindcss";
+
 
 @theme {
   --font-sans: var(--font-geist-sans);
@@ -17,8 +22,13 @@
   }
 }
 
+html{
+  scroll-behavior: smooth;
+}
 body {
+  padding: 0px;
+  margin: 0px;
   color: var(--foreground);
-  background: var(--background);
+  background: #000e20;
   font-family: Arial, Helvetica, sans-serif;
 }

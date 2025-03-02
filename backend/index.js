@@ -7,16 +7,13 @@ const app = express();
 
 app.use(
     cors({
-      origin: "https://ponex.vercel.app", // Allow only your frontend
-      methods: ["GET", "POST"],
-      credentials: true, // Allow cookies if needed
+      origin: "http://localhost:3000", // Allow only your frontend
     })
   );
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
-        origin:"https://ponex.vercel.app",
-        methods: ["GET", "POST"],
+        origin:"http://localhost:3000",
     }
 });
 app.get("/",(req,res)=>{
@@ -26,7 +23,7 @@ io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on("sending",(data)=>{
     console.log(data);
-    io.emit("receiving",`${data}`)
+    socket.broadcast.emit("receiving",`${data}`)
   })
 });
 

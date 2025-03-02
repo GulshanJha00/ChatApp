@@ -1,0 +1,54 @@
+.ponexText{
+    background-image: url("https://static5.depositphotos.com/1037484/453/i/450/depositphotos_4531040-stock-illustration-water-color-background.jpg");
+    color: transparent;
+    background-clip: padding-box;
+    -webkit-background-clip: text;
+}
+.container{
+    background-color: #003b53;
+    animation: animate linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 40%;
+}
+.feature-head{
+    animation: rightIncoming linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 60%;
+}
+.feature-para{
+    animation: leftIncoming linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 40%;
+}
+
+
+@keyframes leftIncoming{
+    from{
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+    to{
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+@keyframes rightIncoming{
+    from{
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to{
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+@keyframes animate{
+    from{
+        opacity: 0;
+        scale:0.5;
+    }
+    to{
+        opacity: 1;
+        scale: 1;
+    }
+}
