@@ -10,21 +10,38 @@ app.use(
       origin: "http://localhost:3000", // Allow only your frontend
     })
   );
+
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
         origin:"http://localhost:3000",
     }
 });
-app.get("/",(req,res)=>{
-    res.send("Yo")
-})
+
+
+
 io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on("sending",(data)=>{
-    console.log(data);
-    socket.broadcast.emit("receiving",`${data}`)
-  })
+    console.log('a user connected');
+
+
+
+    socket.on("join_room",async (data,callback)=>{ //event for getting login data
+         socket.join(data.roomName) //event for joining into room
+         console.log(data.roomName+data.username)
+         setTimeout(() => {
+             io.to(data.roomName).emit("joined_room",`${data.username} Joined room`)         
+             console.log("Joined Room")
+        }, 1000);
+        if (callback)(
+            callback(`message: "Hellow"`)
+        )
+    })
+
+    socket.on("send_message",(data)=>{
+        console.log(`${data.username}: ${data.msgInput}`)
+
+        io.emit("received_message",data)
+    })
 });
 
 server.listen(3001, () => {

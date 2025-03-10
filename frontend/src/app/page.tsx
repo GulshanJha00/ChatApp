@@ -4,6 +4,7 @@ import Link from "next/link";
 import "./app.css"
 import Footer from "@/components/Footer";
 import Features from "@/components/Features";
+
 const page = () => {
   return (
     <div className=" w-full h-screen">
