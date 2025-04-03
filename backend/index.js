@@ -2,15 +2,15 @@ const express = require('express');
 const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const cors = require("cors")
-
+const router = require("./routes/routes")
 const app = express();
-
+require("dotenv").config();
 app.use(
     cors({
       origin: "http://localhost:3000", // Allow only your frontend
     })
   );
-
+app.use(router)
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
@@ -40,10 +40,10 @@ io.on('connection', (socket) => {
     socket.on("send_message",(data)=>{
         console.log(`${data.username}: ${data.msgInput}`)
 
-        io.emit("received_message",data)
+        io.to(data.roomName).emit("received_message",data)
     })
 });
 
-server.listen(3001, () => {
-  console.log('server running at http://localhost:3001');
+server.listen(process.env.PORT, () => {
+  console.log(`server running at http://localhost:${process.env.PORT}`);
 });

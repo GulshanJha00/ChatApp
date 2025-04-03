@@ -1,11 +1,13 @@
 "use client";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 
 const ChatPage = () => {
   const [username, setUsername] = useState("");
   const [roomName, setRoomName] = useState("");
+  const roomNameRef = useRef(""); // 🔥 Holds latest room name
 
   const [messages, setMessages] = useState<
     { username: string; message: string }[]
@@ -15,20 +17,39 @@ const ChatPage = () => {
 
   const socket = useRef<Socket | null>(null);
 
-  const connection = async () => {
-    try {
-      const response = await axios.post("http://localhost:3000/", msgInput);
-    } catch (error) {
-      console.log("Error");
-    }
-  };
+  // ✅ Sync `roomNameRef` with `roomName` state
+  useEffect(() => {
+    roomNameRef.current = roomName;
+  }, [roomName]);
 
-  // ✅ Correct way to initialize socket
+  // ✅ Initialize socket connection
   useEffect(() => {
     socket.current = io("http://localhost:3001");
 
     socket.current?.on("joined_room", (message: string) => {
       console.log(message);
+      toast.success(message)
+    });
+
+    socket.current?.on("received_message", async () => {
+      try {
+        const response = await axios.post("http://localhost:3001/gett", {
+          roomName: roomNameRef.current,
+        });
+
+        response.data.chatMessage.map(
+          () => {
+            setMessages(
+              response.data.chatMessage.map((ele: { username: string; msgInput: string }) => ({
+                username: ele.username,
+                message: ele.msgInput,
+              }))
+            );
+          }
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     });
 
     return () => {
@@ -36,14 +57,26 @@ const ChatPage = () => {
     };
   }, []);
 
-  const handleMessageInput = (e: React.FormEvent) => {
+  const handleMessageInput = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessages((prev) => [...prev, { username: username, message: msgInput }]);
+    if (!username || !roomName || !msgInput) return;
+
+    try {
+      await axios.post("http://localhost:3001/", {
+        username,
+        roomName,
+        msgInput,
+      });
+    } catch (error) {
+      console.log("Error while sending message to backend" + error);
+    }
+
+    setMessages((prev) => [...prev, { username, message: msgInput }]);
     socket.current?.emit("send_message", { username, msgInput, roomName });
     setMsgInput("");
   };
 
-  const handleJoinRoom = (e: React.FormEvent) => {
+  const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !roomName) return;
 
@@ -53,10 +86,25 @@ const ChatPage = () => {
       (response: string) => {
         console.log(username, roomName);
         console.log(response);
-
         setisSubmit(false);
       }
     );
+    try {
+      const res = await axios.post("http://localhost:3001/gett", {
+        roomName: roomName,
+      });
+
+      setMessages(
+        res.data.chatMessage.map(
+          (ele: { username: string; msgInput: string }) => ({
+            username: ele.username,
+            message: ele.msgInput,
+          })
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching chat history:", error);
+    }
   };
 
   return (
@@ -89,19 +137,30 @@ const ChatPage = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col  items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
           <div className="w-full h-full border-2 border-black bg-white shadow-lg rounded-lg p-4">
-            <div className=" h-[600px] overflow-y-auto border-b border-gray-800 mb-4 p-2">
-              {messages?.map((msg, index) => (
-                <div
-                  key={index}
-                  className="p-2 text-black bg-gray-200 rounded my-1"
-                >
-                  <h1>
-                    {msg.username} : {msg.message}
-                  </h1>
-                </div>
-              ))}
+            <div className="h-[600px] overflow-y-auto border-b border-gray-800 mb-4 p-2">
+              {messages?.map((msg, index) =>
+                msg.username === username ? (
+                  <div
+                    key={index}
+                    className="p-2 text-black bg-blue-200 rounded my-1"
+                  >
+                    <h1>
+                      {msg.username} : {msg.message}
+                    </h1>
+                  </div>
+                ) : (
+                  <div
+                    key={index}
+                    className="p-2 text-black bg-gray-200 rounded my-1"
+                  >
+                    <h1>
+                      {msg.username} : {msg.message}
+                    </h1>
+                  </div>
+                )
+              )}
             </div>
             <div className="flex gap-2">
               <form className="w-full" onSubmit={handleMessageInput}>
@@ -110,9 +169,7 @@ const ChatPage = () => {
                   className="flex-1 w-[90%] p-2 text-black border rounded"
                   placeholder="Type a message..."
                   value={msgInput}
-                  onChange={(e) => {
-                    setMsgInput(e.target.value);
-                  }}
+                  onChange={(e) => setMsgInput(e.target.value)}
                 />
                 <button className="bg-blue-500 text-white px-4 py-2 rounded">
                   Send
@@ -122,6 +179,7 @@ const ChatPage = () => {
           </div>
         </div>
       )}
+       <ToastContainer />
     </>
   );
 };
