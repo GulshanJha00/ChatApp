@@ -4,17 +4,22 @@ const { Server } = require('socket.io');
 const cors = require("cors")
 const router = require("./routes/routes")
 const app = express();
-
+require("dotenv").config()
+app.use(express.json());
 app.use(
     cors({
-      origin: "http://localhost:3000", // Allow only your frontend
+      origin: ["http://localhost:3000", "https://ponex.vercel.app"], // Allow only your frontend
+      credentials: true,
+      methods: ["GET","POST"]
     })
   );
 app.use(router)
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
-        origin:"http://localhost:3000",
+        origin:["http://localhost:3000", "https://ponex.vercel.app"],
+        methods: ["GET","POST"],
+        credentials: true
     }
 });
 
@@ -44,6 +49,6 @@ io.on('connection', (socket) => {
     })
 });
 
-server.listen(3001, () => {
-  console.log('server running at http://localhost:3001');
+server.listen(process.env.PORT || 3001, () => {
+    console.log(`server running at ${process.env.PORT || 3001}`);
 });

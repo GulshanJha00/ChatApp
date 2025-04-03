@@ -2,15 +2,20 @@ const express = require('express');
 const chatSchema = require("../schema/chatSchema")
 const cors = require("cors")
 
-const router = express();
+const router = express.Router();
 router.use(express.json())
 
 router.use(
     cors({
-      origin: "http://localhost:3000", // Allow only your frontend
+      origin: ["http://localhost:3000", "https://ponex.vercel.app"], // Allow only your frontend
+      methods: ["GET","POST"]
     })
   );
   
+
+router.get("/", (req, res) => {
+    res.send("Hellow, Backend is live! 🚀");
+});
 
   router.post("/",async (req,res)=>{
     const {username,roomName,msgInput} = await req.body;
