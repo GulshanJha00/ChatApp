@@ -7,14 +7,14 @@ const app = express();
 require("dotenv").config();
 app.use(
     cors({
-      origin: "http://localhost:3000", // Allow only your frontend
+      origin: "https://ponex.vercel.app/", // Allow only your frontend
     })
   );
 app.use(router)
 const server = createServer(app);
 const io = new Server(server,{
     cors:{
-        origin:"http://localhost:3000",
+        origin:"https://ponex.vercel.app/",
     }
 });
 
