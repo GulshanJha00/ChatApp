@@ -7,13 +7,10 @@ router.use(express.json())
 
 router.use(
     cors({
-      origin: "https://ponex.vercel.app/", // Allow only your frontend
+      origin: "http://localhost:3000", // Allow only your frontend
     })
   );
   
-  router.get("/",(req,res)=>{
-    res.send("Working fine")
-  })
 
   router.post("/",async (req,res)=>{
     const {username,roomName,msgInput} = await req.body;

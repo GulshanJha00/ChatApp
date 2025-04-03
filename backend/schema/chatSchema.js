@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
 
 const connection = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect("mongodb://127.0.0.1:27017/ponex");
     console.log("Database Connected Successfully");
   } catch (error) {
     console.log("Database Connection failed");

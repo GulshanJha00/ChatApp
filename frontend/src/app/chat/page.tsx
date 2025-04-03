@@ -24,7 +24,7 @@ const ChatPage = () => {
 
   // ✅ Initialize socket connection
   useEffect(() => {
-    socket.current = io("https://chatapp-1-ywkf.onrender.com");
+    socket.current = io("http://localhost:3001");
 
     socket.current?.on("joined_room", (message: string) => {
       console.log(message);
@@ -33,14 +33,14 @@ const ChatPage = () => {
 
     socket.current?.on("received_message", async () => {
       try {
-        const response = await axios.post("https://chatapp-1-ywkf.onrender.com/gett", {
+        const response = await axios.post("http://localhost:3001/gett", {
           roomName: roomNameRef.current,
         });
 
         response.data.chatMessage.map(
           () => {
             setMessages(
-              response.data.chatMessage.map((ele: { username: string; msgInput: string }) => ({
+              response.data.chatMessage.map((ele:{username: string,msgInput:string}) => ({
                 username: ele.username,
                 message: ele.msgInput,
               }))
@@ -62,13 +62,13 @@ const ChatPage = () => {
     if (!username || !roomName || !msgInput) return;
 
     try {
-      await axios.post("https://chatapp-1-ywkf.onrender.com", {
+      await axios.post("http://localhost:3001/", {
         username,
         roomName,
         msgInput,
       });
     } catch (error) {
-      console.log("Error while sending message to backend" + error);
+      console.log("Error while sending message to backend"+ error);
     }
 
     setMessages((prev) => [...prev, { username, message: msgInput }]);
@@ -90,7 +90,7 @@ const ChatPage = () => {
       }
     );
     try {
-      const res = await axios.post("https://chatapp-1-ywkf.onrender.com/gett", {
+      const res = await axios.post("http://localhost:3001/gett", {
         roomName: roomName,
       });
 
