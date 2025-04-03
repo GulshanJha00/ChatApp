@@ -11,6 +11,9 @@ router.use(
     })
   );
   
+  router.get("/",(req,res)=>{
+    res.send("Working fine")
+  })
 
   router.post("/",async (req,res)=>{
     const {username,roomName,msgInput} = await req.body;
