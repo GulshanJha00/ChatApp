@@ -24,7 +24,7 @@ const ChatPage = () => {
 
   // ✅ Initialize socket connection
   useEffect(() => {
-    socket.current = io("http://localhost:3001");
+    socket.current = io("https://chatapp-pqmx.onrender.com");
 
     socket.current?.on("joined_room", (message: string) => {
       console.log(message);
@@ -33,7 +33,7 @@ const ChatPage = () => {
 
     socket.current?.on("received_message", async () => {
       try {
-        const response = await axios.post("http://localhost:3001/gett", {
+        const response = await axios.post("https://chatapp-pqmx.onrender.com/gett", {
           roomName: roomNameRef.current,
         });
 
@@ -62,7 +62,7 @@ const ChatPage = () => {
     if (!username || !roomName || !msgInput) return;
 
     try {
-      await axios.post("http://localhost:3001/", {
+      await axios.post("https://chatapp-pqmx.onrender.com/", {
         username,
         roomName,
         msgInput,
@@ -90,7 +90,7 @@ const ChatPage = () => {
       }
     );
     try {
-      const res = await axios.post("http://localhost:3001/gett", {
+      const res = await axios.post("https://chatapp-pqmx.onrender.com/gett", {
         roomName: roomName,
       });
 
